@@ -1,5 +1,7 @@
 package model;
 
+import exception.UserException;
+
 import java.time.LocalDateTime;
 
 public class User {
@@ -13,13 +15,8 @@ public class User {
     private LocalDateTime createdAt;
 
 
-    private User(Long id,
-                 String email,
-                 String password,
-                 UserStatus status,
-                 String activationCode,
-                 LocalDateTime activationExpiresAt,
-                 LocalDateTime createdAt) {
+    private User(Long id, String email, String password, UserStatus status, String activationCode,
+                 LocalDateTime activationExpiresAt, LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -30,12 +27,9 @@ public class User {
     }
 
 
-    public static User factory(
-            String email,
-            String password,
-            LocalDateTime now
+    public static User factory(String email, String password, LocalDateTime now
     ) {
-        if (email == null || email.isBlank()) {
+        if (email == null ||  email.isBlank()) {
             throw new UserException("Email cannot be null or empty");
         }
         if (!email.contains("@")) {
@@ -62,7 +56,7 @@ public class User {
         );
     }
 
-    // ==== comportamiento del dominio ====
+
 
     public void activate(LocalDateTime now) {
         if (status != UserStatus.PENDING) {
