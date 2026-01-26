@@ -6,7 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="core" />
         <module name="Adapter" />
+        <module name="adapter" />
         <module name="Core" />
       </profile>
     </annotationProcessing>
@@ -15,6 +17,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Adapter" options="-parameters" />
       <module name="Core" options="" />
+      <module name="adapter" options="-parameters" />
     </option>
   </component>
 </project>

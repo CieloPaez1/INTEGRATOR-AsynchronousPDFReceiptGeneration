@@ -1,5 +1,6 @@
 package model;
 
+import enums.UserStatus;
 import exception.UserException;
 
 import java.time.LocalDateTime;
