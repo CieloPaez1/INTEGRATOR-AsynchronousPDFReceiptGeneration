@@ -36,7 +36,7 @@ public class Order {
             throw new OrderException("Order amount must be greater than zero");
         }
         if (now == null) {
-            throw new NullPointerException("Current time cannot be null");
+            throw new OrderException("Current time cannot be null");
         }
 
         return new Order(
@@ -52,8 +52,8 @@ public class Order {
 
     public void process(LocalDateTime now) {
         ensureStatus(OrderStatus.PENDING);
-        update(now);
         status = OrderStatus.PROCESSING;
+        update(now);
     }
 
     public void approve(LocalDateTime now) {
@@ -95,6 +95,13 @@ public class Order {
         return status == OrderStatus.APPROVED
                 || status == OrderStatus.REJECTED
                 || status == OrderStatus.CANCELLED;
+    }
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
     }
 }
 

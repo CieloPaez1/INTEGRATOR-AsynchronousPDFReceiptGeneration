@@ -8,12 +8,12 @@ import java.time.LocalDateTime;
 public class User {
 
     private Long id;
-    private String email;
-    private String password;
+    private final String email;
+    private final String password;
     private UserStatus status;
     private String activationCode;
     private LocalDateTime activationExpiresAt;
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
 
     private User(Long id, String email, String password, UserStatus status, String activationCode,
@@ -65,7 +65,7 @@ public class User {
         }
         if (activationExpiresAt.isBefore(now)) {
             status = UserStatus.EXPIRED;
-            throw new UserException("Activation code expired");
+            return;
         }
         status = UserStatus.ACTIVE;
     }
@@ -74,4 +74,7 @@ public class User {
         return status == UserStatus.ACTIVE;
     }
 
-   }
+    public UserStatus getStatus() {
+        return status;
+    }
+}

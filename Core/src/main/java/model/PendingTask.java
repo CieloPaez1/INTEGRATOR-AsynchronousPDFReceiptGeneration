@@ -25,7 +25,7 @@ public class PendingTask {
         this.createdAt = createdAt;
         this.processedAt = processedAt;
     }
-    public static PendingTask create(Order order, LocalDateTime now) {
+    public static PendingTask factory(Order order, LocalDateTime now) {
         if (order == null) {
             throw new PendingTaskException("Order cannot be null");
         }
@@ -63,5 +63,14 @@ public class PendingTask {
     public boolean isPending() {
         return status == PendingTaskStatus.PENDING;
     }
+
+    public PendingTaskStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getProcessedAt() {
+        return processedAt;
+    }
+
 
 }
