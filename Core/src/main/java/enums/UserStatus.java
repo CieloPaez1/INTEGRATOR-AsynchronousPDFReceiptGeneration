@@ -1,9 +1,5 @@
 package enums;
 
 public enum UserStatus {
-    PENDING,
-    ACTIVE,
-    EXPIRED
-
-
+    PENDING, ACTIVE, EXPIRED
 }
