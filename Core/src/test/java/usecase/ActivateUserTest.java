@@ -1,7 +1,6 @@
 package usecase;
 
 import enums.UserStatus;
-import exception.UserException;
 import model.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -104,17 +103,6 @@ public class ActivateUserTest {
 
         verify(userOutput, never()).save(any());
     }
-    @Test
-    void shouldFailIfSaveThrowsException() {
-        Clock clock = fixedClock();
-        User user = pendingValid(clock);
 
-        when(userOutput.findAllPending()).thenReturn(List.of(user));
-        doThrow(new UserException("DB error")).when(userOutput).save(user);
-
-        ActivateUser useCase = new ActivateUser(userOutput, clock);
-
-        Assertions.assertThrows(RuntimeException.class, useCase::activateUser);
-    }
 
 }

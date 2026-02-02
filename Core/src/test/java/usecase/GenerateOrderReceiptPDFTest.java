@@ -61,6 +61,7 @@ public class GenerateOrderReceiptPDFTest {
         verify(orderOutput).findById(1L);
         verify(pendingTaskOutput).save(any(PendingTask.class));
     }
+
     @Test
     void shouldFailWhenOrderNotFound() {
         Clock clock = fixedClock();
