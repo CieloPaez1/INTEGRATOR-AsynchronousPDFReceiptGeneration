@@ -67,8 +67,10 @@ public class User {
             status = UserStatus.EXPIRED;
             return;
         }
+
         status = UserStatus.ACTIVE;
     }
+
 
     public boolean isActive() {
         return status == UserStatus.ACTIVE;
