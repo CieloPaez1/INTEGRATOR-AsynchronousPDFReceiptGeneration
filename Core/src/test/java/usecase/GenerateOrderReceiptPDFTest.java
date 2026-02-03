@@ -51,7 +51,11 @@ public class GenerateOrderReceiptPDFTest {
         Clock clock = fixedClock();
         Order order = validOrder(clock);
 
+        order.process(LocalDateTime.now(clock).plusMinutes(1));
+        order.approve(LocalDateTime.now(clock).plusMinutes(2));
+
         when(orderOutput.findById(1L)).thenReturn(order);
+        when(pendingTaskOutput.existsPendingForOrder(1L)).thenReturn(false);
         when(pendingTaskOutput.save(any(PendingTask.class))).thenReturn(true);
 
         GenerateOrderReceiptPDF useCase = useCase(clock);
@@ -59,6 +63,7 @@ public class GenerateOrderReceiptPDFTest {
         useCase.generateReceipt(1L);
 
         verify(orderOutput).findById(1L);
+        verify(pendingTaskOutput).existsPendingForOrder(1L);
         verify(pendingTaskOutput).save(any(PendingTask.class));
     }
 
@@ -75,6 +80,7 @@ public class GenerateOrderReceiptPDFTest {
         );
 
         verify(orderOutput).findById(1L);
+        verify(pendingTaskOutput, never()).existsPendingForOrder(any());
         verify(pendingTaskOutput, never()).save(any());
     }
     @Test
@@ -82,7 +88,11 @@ public class GenerateOrderReceiptPDFTest {
         Clock clock = fixedClock();
         Order order = validOrder(clock);
 
+        order.process(LocalDateTime.now(clock).plusMinutes(1));
+        order.approve(LocalDateTime.now(clock).plusMinutes(2));
+
         when(orderOutput.findById(1L)).thenReturn(order);
+        when(pendingTaskOutput.existsPendingForOrder(1L)).thenReturn(false);
         when(pendingTaskOutput.save(any(PendingTask.class))).thenReturn(false);
 
         GenerateOrderReceiptPDF useCase = useCase(clock);
@@ -91,9 +101,68 @@ public class GenerateOrderReceiptPDFTest {
                 useCase.generateReceipt(1L)
         );
 
-        verify(orderOutput).findById(1L);
-        verify(pendingTaskOutput).save(any(PendingTask.class));
+        verify(pendingTaskOutput).existsPendingForOrder(1L);
+        verify(pendingTaskOutput).save(any());
     }
+    @Test
+    void shouldFailWhenPendingTaskAlreadyExists() {
+        Clock clock = fixedClock();
+        Order order = validOrder(clock);
+
+        order.process(LocalDateTime.now(clock).plusMinutes(1));
+        order.approve(LocalDateTime.now(clock).plusMinutes(2));
+
+        when(orderOutput.findById(1L)).thenReturn(order);
+        when(pendingTaskOutput.existsPendingForOrder(1L)).thenReturn(true);
+
+        GenerateOrderReceiptPDF useCase = useCase(clock);
+
+        Assertions.assertThrows(OrderException.class, () ->
+                useCase.generateReceipt(1L)
+        );
+
+        verify(pendingTaskOutput).existsPendingForOrder(1L);
+        verify(pendingTaskOutput, never()).save(any());
+    }
+    @Test
+    void shouldFailWhenOrderIsFinalButNotApproved() {
+        Clock clock = fixedClock();
+        Order order = validOrder(clock);
+
+        order.process(LocalDateTime.now(clock).plusMinutes(1));
+        order.reject(LocalDateTime.now(clock).plusMinutes(2));
+
+        when(orderOutput.findById(1L)).thenReturn(order);
+
+        GenerateOrderReceiptPDF useCase = useCase(clock);
+
+        Assertions.assertThrows(OrderException.class, () ->
+                useCase.generateReceipt(1L)
+        );
+
+        verify(orderOutput).findById(1L);
+        verify(pendingTaskOutput, never()).existsPendingForOrder(any());
+        verify(pendingTaskOutput, never()).save(any());
+    }
+    @Test
+    void shouldFailWhenOrderIsNotFinal() {
+        Clock clock = fixedClock();
+        Order order = validOrder(clock);
+
+        when(orderOutput.findById(1L)).thenReturn(order);
+
+        GenerateOrderReceiptPDF useCase = useCase(clock);
+
+        Assertions.assertThrows(OrderException.class, () ->
+                useCase.generateReceipt(1L)
+        );
+
+        verify(orderOutput).findById(1L);
+        verify(pendingTaskOutput, never()).existsPendingForOrder(any());
+        verify(pendingTaskOutput, never()).save(any());
+    }
+
+
 
 
 

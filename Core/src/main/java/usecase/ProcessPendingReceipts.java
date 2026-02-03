@@ -26,12 +26,17 @@ public class ProcessPendingReceipts implements ProcessPendingReceiptsInput {
         List<PendingTask> tasks = pendingTaskOutput.findAllPending();
         LocalDateTime now = LocalDateTime.now(clock);
         for (PendingTask task : tasks) {
+            if (!task.isPending()) {
+                continue;
+            }
+
             try {
                 pdfOutput.generate(task);
                 task.markDone(now);
             } catch (Exception e) {
                 task.markError(now);
             }
+
             pendingTaskOutput.update(task);
         }
     }

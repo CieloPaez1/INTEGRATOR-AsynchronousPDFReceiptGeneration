@@ -88,16 +88,24 @@ public class ProcessPendingReceiptsTest {
         verify(pendingTaskOutput).update(task);
     }
 
-    @Test
-    void shouldDoNothingWhenNoPendingTasks() {
-        when(pendingTaskOutput.findAllPending()).thenReturn(List.of());
 
-        ProcessPendingReceipts useCase = useCase(fixedClock());
+    @Test
+    void shouldSkipNonPendingTasks() {
+        Clock clock = fixedClock();
+        PendingTask task = validTask(clock);
+        task.markDone(LocalDateTime.now(clock));
+        when(pendingTaskOutput.findAllPending()).thenReturn(List.of(task));
+
+        ProcessPendingReceipts useCase = useCase(clock);
 
         useCase.process();
+
+
+        Assertions.assertEquals(PendingTaskStatus.DONE, task.getStatus());
 
         verifyNoInteractions(pdfOutput);
         verify(pendingTaskOutput, never()).update(any());
     }
+
 
 }

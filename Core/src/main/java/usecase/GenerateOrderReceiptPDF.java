@@ -29,6 +29,17 @@ public class GenerateOrderReceiptPDF implements GenerateOrderReceiptPDFInput {
         if (order == null) {
             throw new OrderException("Order not found");
         }
+        if (!order.isFinal()) {
+            throw new OrderException("Order must be final to generate receipt");
+        }
+
+        if (order.getStatus() != enums.OrderStatus.APPROVED) {
+            throw new OrderException("Only APPROVED orders can generate receipts");
+        }
+
+        if (pendingTaskOutput.existsPendingForOrder(orderId)) {
+            throw new OrderException("A receipt task already exists for this order");
+        }
 
         LocalDateTime now = LocalDateTime.now(clock);
         PendingTask task = PendingTask.factory(order, now);
