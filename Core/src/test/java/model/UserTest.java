@@ -61,6 +61,7 @@ public class UserTest {
         Assertions.assertFalse(user.isActive());
     }
 
+
     @Test
     void throwExceptionWhenActivatingFromInvalidState() {
         LocalDateTime now = LocalDateTime.now();
