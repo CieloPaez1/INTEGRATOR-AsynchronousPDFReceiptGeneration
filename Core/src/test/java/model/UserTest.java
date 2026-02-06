@@ -6,10 +6,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class UserTest {
     private User createPendingUser(LocalDateTime now) {
-        return User.factory("john@example.com", "secret123", now);
+        User user= User.factory("john@example.com", "secret123", now);
+        user.setId(1L);
+        user.setActivationCode(UUID.randomUUID().toString());
+
+        return user;
     }
     @Test
     void createUserInPendingState() {
@@ -101,6 +106,20 @@ public class UserTest {
         Assertions.assertThrows(UserException.class, () ->
                 User.factory("john@example.com", "secret123", null)
         );
+    }
+    @Test
+    void gettersReturnCorrectValues() {
+        LocalDateTime now = LocalDateTime.now();
+        User user = User.factory("john@example.com", "secret123", now);
+        user.setId(1L);
+        user.setActivationCode("TEST-CODE");
+        Assertions.assertNotNull(user.getId());
+        Assertions.assertNotNull(user.getActivationCode());
+        Assertions.assertEquals("john@example.com", user.getEmail());
+        Assertions.assertEquals("secret123", user.getPassword());
+        Assertions.assertEquals(now.plusHours(24), user.getActivationExpiresAt());
+        Assertions.assertEquals(now, user.getCreatedAt());
+
     }
 }
 

@@ -75,7 +75,18 @@ public class User {
     public boolean isActive() {
         return status == UserStatus.ACTIVE;
     }
-    public UserStatus getStatus() {
-        return status;
+    public UserStatus getStatus() {return status;}
+    public Long getId() {return id;}
+    public String getEmail() {return email;}
+    public String getActivationCode() {return activationCode;}
+    public String getPassword() {return password;}
+    public LocalDateTime getActivationExpiresAt() {return activationExpiresAt;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+
+    public void setId(Long id) {
+        this.id = id;}
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 }

@@ -99,9 +99,20 @@ public class Order {
     public OrderStatus getStatus() {
         return status;
     }
-
+    public Long getId() {return id;}
+    public User getUser() {return user;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public LocalDateTime getUpdatedAt() {return updatedAt;}
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
 

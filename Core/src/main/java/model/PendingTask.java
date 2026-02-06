@@ -64,13 +64,16 @@ public class PendingTask {
         return status == PendingTaskStatus.PENDING;
     }
 
-    public PendingTaskStatus getStatus() {
-        return status;
-    }
-
+    public PendingTaskStatus getStatus() {return status;}
+    public Long getId() {return id;}
+    public Order getOrder() {return order;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
     public LocalDateTime getProcessedAt() {
         return processedAt;
     }
 
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

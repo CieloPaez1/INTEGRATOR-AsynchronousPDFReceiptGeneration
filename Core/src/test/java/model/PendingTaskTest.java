@@ -96,5 +96,17 @@ public class PendingTaskTest {
                 task.markError(null)
         );
     }
+    @Test
+    void gettersReturnCorrectValues() {
+        LocalDateTime now = LocalDateTime.now();
+        PendingTask task = PendingTask.factory(pendingOrder(now), now);
+
+        task.setId(1L);
+
+        Assertions.assertNotNull(task.getId());
+        Assertions.assertNotNull(task.getOrder());
+        Assertions.assertNotNull(task.getCreatedAt());
+    }
+
 }
 
