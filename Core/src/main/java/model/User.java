@@ -75,7 +75,6 @@ public class User {
     public boolean isActive() {
         return status == UserStatus.ACTIVE;
     }
-
     public UserStatus getStatus() {
         return status;
     }
