@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface PendingTaskJPARepository extends JpaRepository<PendingTaskEntity, Long> {
     List<PendingTaskEntity> findByStatus(PendingTaskStatus status);
+    boolean existsByOrderIdAndStatus(Long orderId, PendingTaskStatus status);
 }

@@ -48,6 +48,9 @@ public class Order {
                 now
         );
     }
+    public static Order restore(Long id, User user, OrderStatus status, BigDecimal amount, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new Order(id, user, status, amount, createdAt, updatedAt);
+    }
 
 
     public void process(LocalDateTime now) {
@@ -96,6 +99,10 @@ public class Order {
                 || status == OrderStatus.REJECTED
                 || status == OrderStatus.CANCELLED;
     }
+
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {this.updatedAt = updatedAt;}
+    public void setId(Long id) {this.id = id;}
     public OrderStatus getStatus() {
         return status;
     }
@@ -105,14 +112,6 @@ public class Order {
     public LocalDateTime getUpdatedAt() {return updatedAt;}
     public BigDecimal getAmount() {
         return amount;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
 

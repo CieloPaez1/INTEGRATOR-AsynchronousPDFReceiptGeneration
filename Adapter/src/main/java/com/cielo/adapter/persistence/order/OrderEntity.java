@@ -43,18 +43,12 @@ public class OrderEntity {
     }
 
 
+
     public Long getId() { return id; }
     public UserEntity getUser() { return user; }
     public OrderStatus getStatus() { return status; }
     public BigDecimal getAmount() { return amount; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
-
-    public void setId(Long id) { this.id = id; }
-    public void setUser(UserEntity user) { this.user = user; }
-    public void setStatus(OrderStatus status) { this.status = status; }
-    public void setAmount(BigDecimal amount) { this.amount = amount; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
 }

@@ -2,7 +2,6 @@ package com.cielo.adapter.persistence.user;
 
 import enums.UserStatus;
 import jakarta.persistence.*;
-import model.User;
 
 import java.time.LocalDateTime;
 
@@ -43,6 +42,15 @@ public class UserEntity {
         this.createdAt = createdAt;
     }
 
+
+
+    public Long getId() {return id;}
+    public String getEmail() {return email;}
+    public String getPassword() {return password;}
+    public UserStatus getStatus() {return status;}
+    public String getActivationCode() {return activationCode;}
+    public LocalDateTime getActivationExpiresAt() {return activationExpiresAt;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
 }
 
 

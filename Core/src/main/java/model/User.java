@@ -56,6 +56,12 @@ public class User {
                 now
         );
     }
+    public static User restore(Long id, String email, String password, UserStatus status, String activationCode, LocalDateTime activationExpiresAt, LocalDateTime createdAt) {
+
+        return new User(id,email, password, status, activationCode, activationExpiresAt, createdAt
+        );
+    }
+
 
 
 
@@ -82,11 +88,6 @@ public class User {
     public String getPassword() {return password;}
     public LocalDateTime getActivationExpiresAt() {return activationExpiresAt;}
     public LocalDateTime getCreatedAt() {return createdAt;}
-
-    public void setId(Long id) {
-        this.id = id;}
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
-    }
+    public void setId(Long id) {this.id = id;}
+    public void setActivationCode(String activationCode) {this.activationCode = activationCode;}
 }

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static org.mockito.Mockito.mock;
+
 public class OrderTest {
 
     private User activeUser(LocalDateTime now) {
@@ -146,23 +148,24 @@ public class OrderTest {
 
     }
     @Test
-    void gettersReturnCorrectValues() {
+    void restoreRecreatesOrderWithGivenValues() {
         LocalDateTime now = LocalDateTime.now();
-        Order order = createPendingOrder(now);
+        User user = activeUser(now);
+        Order restored = Order.restore(
+                99L,
+                user,
+                OrderStatus.PROCESSING,
+                BigDecimal.valueOf(100),
+                now,
+                now.plusMinutes(5)
+        );
 
-
-        order.setId(1L);
-        order.setUpdatedAt(now.plusMinutes(1));
-
-        Assertions.assertNotNull(order.getId());
-        Assertions.assertNotNull(order.getUser());
-        Assertions.assertNotNull(order.getCreatedAt());
-        Assertions.assertNotNull(order.getUpdatedAt());
-
-        Assertions.assertEquals(BigDecimal.valueOf(100), order.getAmount());
-        Assertions.assertEquals(OrderStatus.PENDING, order.getStatus());
-    }
-
-
+        Assertions.assertEquals(99L, restored.getId());
+        Assertions.assertEquals(user, restored.getUser());
+        Assertions.assertEquals(OrderStatus.PROCESSING, restored.getStatus());
+        Assertions.assertEquals(BigDecimal.valueOf(100), restored.getAmount());
+        Assertions.assertEquals(now, restored.getCreatedAt());
+        Assertions.assertEquals(now.plusMinutes(5), restored.getUpdatedAt());
+ }
 
 }

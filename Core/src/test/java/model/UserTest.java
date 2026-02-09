@@ -107,19 +107,28 @@ public class UserTest {
                 User.factory("john@example.com", "secret123", null)
         );
     }
+
     @Test
-    void gettersReturnCorrectValues() {
+    void restoreRecreatesOrderWithGivenValues() {
         LocalDateTime now = LocalDateTime.now();
-        User user = User.factory("john@example.com", "secret123", now);
-        user.setId(1L);
-        user.setActivationCode("TEST-CODE");
-        Assertions.assertNotNull(user.getId());
-        Assertions.assertNotNull(user.getActivationCode());
+
+        User user = User.restore(
+                10L,
+                "john@example.com",
+                "secret123",
+                UserStatus.ACTIVE,
+                "ABC123",
+                now.plusHours(5),
+                now
+        );
+
+        Assertions.assertEquals(10L, user.getId());
         Assertions.assertEquals("john@example.com", user.getEmail());
         Assertions.assertEquals("secret123", user.getPassword());
-        Assertions.assertEquals(now.plusHours(24), user.getActivationExpiresAt());
+        Assertions.assertEquals(UserStatus.ACTIVE, user.getStatus());
+        Assertions.assertEquals("ABC123", user.getActivationCode());
+        Assertions.assertEquals(now.plusHours(5), user.getActivationExpiresAt());
         Assertions.assertEquals(now, user.getCreatedAt());
-
     }
 }
 

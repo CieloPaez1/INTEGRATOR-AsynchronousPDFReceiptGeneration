@@ -41,6 +41,11 @@ public class PendingTask {
                 null
         );
     }
+    public static PendingTask restore(Long id, Order order, PendingTaskStatus status, LocalDateTime createdAt, LocalDateTime processedAt) {
+
+        return new PendingTask(id, order, status, createdAt, processedAt);
+    }
+
 
 
 
@@ -71,9 +76,5 @@ public class PendingTask {
     public LocalDateTime getProcessedAt() {
         return processedAt;
     }
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) {this.id = id;}
 }

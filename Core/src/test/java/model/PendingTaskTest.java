@@ -97,16 +97,26 @@ public class PendingTaskTest {
         );
     }
     @Test
-    void gettersReturnCorrectValues() {
+    void restoreRecreatesOrderWithGivenValues() {
         LocalDateTime now = LocalDateTime.now();
-        PendingTask task = PendingTask.factory(pendingOrder(now), now);
 
-        task.setId(1L);
+        Order order = pendingOrder(now);
 
-        Assertions.assertNotNull(task.getId());
-        Assertions.assertNotNull(task.getOrder());
-        Assertions.assertNotNull(task.getCreatedAt());
+        PendingTask task = PendingTask.restore(
+                10L,
+                order,
+                PendingTaskStatus.DONE,
+                now.minusHours(2),
+                now
+        );
+
+        Assertions.assertEquals(10L, task.getId());
+        Assertions.assertEquals(order, task.getOrder());
+        Assertions.assertEquals(PendingTaskStatus.DONE, task.getStatus());
+        Assertions.assertEquals(now.minusHours(2), task.getCreatedAt());
+        Assertions.assertEquals(now, task.getProcessedAt());
     }
+
 
 }
 
