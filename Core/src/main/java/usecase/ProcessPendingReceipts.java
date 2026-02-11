@@ -7,6 +7,7 @@ import output.PendingTaskOutput;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessPendingReceipts implements ProcessPendingReceiptsInput {
@@ -22,22 +23,21 @@ public class ProcessPendingReceipts implements ProcessPendingReceiptsInput {
 
 
     @Override
-    public void process() {
+    public List<byte[]> process() {
         List<PendingTask> tasks = pendingTaskOutput.findAllPending();
+        List<byte[]> generatedPdfs = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now(clock);
-        for (PendingTask task : tasks) {
-            if (!task.isPending()) {
-                continue;
-            }
 
+        for (PendingTask task : tasks) {
             try {
-                pdfOutput.generate(task);
+                byte[] pdf = pdfOutput.generate(task);
+                generatedPdfs.add(pdf);
                 task.markDone(now);
             } catch (Exception e) {
                 task.markError(now);
             }
-
             pendingTaskOutput.update(task);
         }
+        return generatedPdfs;
     }
 }

@@ -33,11 +33,21 @@ public class PendingTaskEntity {
         this.processedAt = processedAt;
     }
 
+
     public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
     public OrderEntity getOrder() { return order; }
+    public void setOrder(OrderEntity order) { this.order = order; }
+
     public PendingTaskStatus getStatus() { return status; }
+    public void setStatus(PendingTaskStatus status) { this.status = status; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
     public LocalDateTime getProcessedAt() { return processedAt; }
-
-
+    public void setProcessedAt(LocalDateTime processedAt) { this.processedAt = processedAt; }
 }
+
+

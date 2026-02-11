@@ -35,10 +35,13 @@ public class User {
         }
         if (!email.contains("@")) {
             throw new UserException("Invalid email format");
+
         }
+        email = email.trim();
         if (password == null || password.isBlank()) {
             throw new UserException("Password cannot be null or empty");
         }
+        password = password.trim();
         if (password.length() < 6) {
             throw new UserException("Password must have at least 6 characters");
         }
@@ -89,5 +92,7 @@ public class User {
     public LocalDateTime getActivationExpiresAt() {return activationExpiresAt;}
     public LocalDateTime getCreatedAt() {return createdAt;}
     public void setId(Long id) {this.id = id;}
-    public void setActivationCode(String activationCode) {this.activationCode = activationCode;}
-}
+
+    public void setActivationCode(String code) { this.activationCode = code; }
+    }
+

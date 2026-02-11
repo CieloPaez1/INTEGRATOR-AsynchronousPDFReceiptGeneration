@@ -50,17 +50,27 @@ public class PendingTask {
 
 
     public void markDone(LocalDateTime now) {
+        if (status != PendingTaskStatus.PENDING) {
+            throw new PendingTaskException("Task already processed");
+        }
+
         if (now == null) {
             throw new PendingTaskException("Current time cannot be null");
         }
+
         this.status = PendingTaskStatus.DONE;
         this.processedAt = now;
     }
 
     public void markError(LocalDateTime now) {
+        if (status != PendingTaskStatus.PENDING) {
+            throw new PendingTaskException("Task already processed");
+        }
+
         if (now == null) {
             throw new PendingTaskException("Current time cannot be null");
         }
+
         this.status = PendingTaskStatus.ERROR;
         this.processedAt = now;
     }

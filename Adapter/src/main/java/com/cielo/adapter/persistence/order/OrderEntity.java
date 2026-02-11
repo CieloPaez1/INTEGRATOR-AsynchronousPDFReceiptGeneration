@@ -46,8 +46,11 @@ public class OrderEntity {
 
     public Long getId() { return id; }
     public UserEntity getUser() { return user; }
+    public void setUser(UserEntity user) { this.user = user; }
     public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
     public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 

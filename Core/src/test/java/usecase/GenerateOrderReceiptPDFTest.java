@@ -133,6 +133,7 @@ public class GenerateOrderReceiptPDFTest {
         order.reject(LocalDateTime.now(clock).plusMinutes(2));
 
         when(orderOutput.findById(1L)).thenReturn(order);
+        when(pendingTaskOutput.existsPendingForOrder(1L)).thenReturn(false);
 
         GenerateOrderReceiptPDF useCase = useCase(clock);
 
@@ -141,15 +142,16 @@ public class GenerateOrderReceiptPDFTest {
         );
 
         verify(orderOutput).findById(1L);
-        verify(pendingTaskOutput, never()).existsPendingForOrder(any());
+        verify(pendingTaskOutput).existsPendingForOrder(1L);
         verify(pendingTaskOutput, never()).save(any());
     }
     @Test
     void shouldFailWhenOrderIsNotFinal() {
         Clock clock = fixedClock();
-        Order order = validOrder(clock);
+        Order order = validOrder(clock); // queda en PENDING
 
         when(orderOutput.findById(1L)).thenReturn(order);
+        when(pendingTaskOutput.existsPendingForOrder(1L)).thenReturn(false);
 
         GenerateOrderReceiptPDF useCase = useCase(clock);
 
@@ -158,7 +160,7 @@ public class GenerateOrderReceiptPDFTest {
         );
 
         verify(orderOutput).findById(1L);
-        verify(pendingTaskOutput, never()).existsPendingForOrder(any());
+        verify(pendingTaskOutput).existsPendingForOrder(1L);
         verify(pendingTaskOutput, never()).save(any());
     }
 

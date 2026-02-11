@@ -1,5 +1,7 @@
 package input;
 
+import java.util.List;
+
 public interface ProcessPendingReceiptsInput {
-    void process();
+    List<byte[]> process();
 }

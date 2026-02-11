@@ -35,6 +35,7 @@ public class Order {
         if (amount == null || amount.signum() <= 0) {
             throw new OrderException("Order amount must be greater than zero");
         }
+        if (amount.compareTo(new BigDecimal("10000")) > 0) throw new OrderException("Order amount exceeds maximum allowed");
         if (now == null) {
             throw new OrderException("Current time cannot be null");
         }

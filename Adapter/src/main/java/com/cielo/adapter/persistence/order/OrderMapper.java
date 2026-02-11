@@ -1,16 +1,19 @@
 package com.cielo.adapter.persistence.order;
 
+import com.cielo.adapter.persistence.user.UserEntity;
 import com.cielo.adapter.persistence.user.UserMapper;
 import model.Order;
 
-public class OrderMapper {
+public class
+OrderMapper {
 
     public static OrderEntity coreToEntity(Order order) {
         if (order == null) return null;
+        UserEntity userEntity = UserMapper.coreToEntity(order.getUser());
 
         return new OrderEntity(
                 order.getId(),
-                UserMapper.coreToEntity(order.getUser()),
+                userEntity,
                 order.getStatus(),
                 order.getAmount(),
                 order.getCreatedAt(),
