@@ -6,10 +6,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class UserTest {
     private User createPendingUser(LocalDateTime now) {
-        return User.factory("john@example.com", "secret123", now);
+        User user= User.factory("john@example.com", "secret123", now);
+        user.setId(1L);
+        user.setActivationCode(UUID.randomUUID().toString());
+
+        return user;
     }
     @Test
     void createUserInPendingState() {
@@ -61,7 +66,6 @@ public class UserTest {
         Assertions.assertFalse(user.isActive());
     }
 
-
     @Test
     void throwExceptionWhenActivatingFromInvalidState() {
         LocalDateTime now = LocalDateTime.now();
@@ -71,6 +75,16 @@ public class UserTest {
 
         Assertions.assertThrows(UserException.class, () ->
                 user.activate(now.plusMinutes(2))
+        );
+    }
+
+    @Test
+    void throwExceptionWhenActivateReceivesNullDate() {
+        LocalDateTime now = LocalDateTime.now();
+        User user = createPendingUser(now);
+
+        Assertions.assertThrows(UserException.class, () ->
+                user.activate(null)
         );
     }
 
@@ -101,6 +115,29 @@ public class UserTest {
         Assertions.assertThrows(UserException.class, () ->
                 User.factory("john@example.com", "secret123", null)
         );
+    }
+
+    @Test
+    void restoreRecreatesUserWithGivenValues() {
+        LocalDateTime now = LocalDateTime.now();
+
+        User user = User.restore(
+                10L,
+                "john@example.com",
+                "secret123",
+                UserStatus.ACTIVE,
+                "ABC123",
+                now.plusHours(5),
+                now
+        );
+
+        Assertions.assertEquals(10L, user.getId());
+        Assertions.assertEquals("john@example.com", user.getEmail());
+        Assertions.assertEquals("secret123", user.getPassword());
+        Assertions.assertEquals(UserStatus.ACTIVE, user.getStatus());
+        Assertions.assertEquals("ABC123", user.getActivationCode());
+        Assertions.assertEquals(now.plusHours(5), user.getActivationExpiresAt());
+        Assertions.assertEquals(now, user.getCreatedAt());
     }
 }
 

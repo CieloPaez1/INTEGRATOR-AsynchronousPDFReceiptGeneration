@@ -27,9 +27,12 @@ public class RegisterUserTest {
                 ZoneId.systemDefault()
         );
     }
+
     private RegisterUser useCase(Clock clock) {
         return new RegisterUser(userOutput, clock);
     }
+
+
     @Test
     void shouldRegisterUserSuccessfully() {
         Clock clock = fixedClock();
@@ -37,28 +40,27 @@ public class RegisterUserTest {
         when(userOutput.existsByEmail("john@example.com")).thenReturn(false);
         when(userOutput.save(any(User.class))).thenReturn(true);
 
-        RegisterUser useCase = useCase(clock);
-
-        useCase.registerUser("john@example.com", "secret123");
+        useCase(clock).registerUser("john@example.com", "secret123");
 
         verify(userOutput).existsByEmail("john@example.com");
         verify(userOutput).save(any(User.class));
     }
+
+
     @Test
     void shouldFailWhenEmailAlreadyExists() {
         Clock clock = fixedClock();
 
         when(userOutput.existsByEmail("john@example.com")).thenReturn(true);
 
-        RegisterUser useCase = useCase(clock);
-
         Assertions.assertThrows(UserException.class, () ->
-                useCase.registerUser("john@example.com", "secret123")
+                useCase(clock).registerUser("john@example.com", "secret123")
         );
 
         verify(userOutput).existsByEmail("john@example.com");
         verify(userOutput, never()).save(any());
     }
+
     @Test
     void shouldFailWhenSaveReturnsFalse() {
         Clock clock = fixedClock();
@@ -66,25 +68,24 @@ public class RegisterUserTest {
         when(userOutput.existsByEmail("john@example.com")).thenReturn(false);
         when(userOutput.save(any(User.class))).thenReturn(false);
 
-        RegisterUser useCase = useCase(clock);
-
         Assertions.assertThrows(UserException.class, () ->
-                useCase.registerUser("john@example.com", "secret123")
+                useCase(clock).registerUser("john@example.com", "secret123")
         );
 
         verify(userOutput).save(any(User.class));
     }
+
     @Test
     void shouldFailWhenEmailIsInvalid() {
         Clock clock = fixedClock();
 
         when(userOutput.existsByEmail("badEmail")).thenReturn(false);
 
-        RegisterUser useCase = useCase(clock);
-
         Assertions.assertThrows(UserException.class, () ->
-                useCase.registerUser("badEmail", "secret123")
+                useCase(clock).registerUser("badEmail", "secret123")
         );
+
+        verify(userOutput, never()).save(any());
     }
 
     @Test
@@ -93,29 +94,26 @@ public class RegisterUserTest {
 
         when(userOutput.existsByEmail("john@example.com")).thenReturn(false);
 
-        RegisterUser useCase = useCase(clock);
-
         Assertions.assertThrows(UserException.class, () ->
-                useCase.registerUser("john@example.com", "123")
+                useCase(clock).registerUser("john@example.com", "123")
         );
+
+        verify(userOutput, never()).save(any());
     }
+
     @Test
-    void shouldNotSaveIfFactoryFails() {
+    void shouldFailWhenPasswordIsEmpty() {
         Clock clock = fixedClock();
 
         when(userOutput.existsByEmail("john@example.com")).thenReturn(false);
 
-        RegisterUser useCase = useCase(clock);
-
         Assertions.assertThrows(UserException.class, () ->
-                useCase.registerUser("john@example.com", "")
+                useCase(clock).registerUser("john@example.com", "")
         );
 
         verify(userOutput, never()).save(any());
     }
 }
-
-
 
 
 

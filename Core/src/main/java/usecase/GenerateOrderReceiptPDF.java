@@ -1,5 +1,6 @@
 package usecase;
 
+import enums.OrderStatus;
 import exception.OrderException;
 import input.GenerateOrderReceiptPDFInput;
 import model.Order;
@@ -23,23 +24,23 @@ public class GenerateOrderReceiptPDF implements GenerateOrderReceiptPDFInput {
 
     @Override
     public void generateReceipt(Long orderId) {
+        if (orderId == null) {
+            throw new OrderException("Order not found");
+        }
 
         Order order = orderOutput.findById(orderId);
 
         if (order == null) {
             throw new OrderException("Order not found");
         }
-        if (!order.isFinal()) {
-            throw new OrderException("Order must be final to generate receipt");
-        }
 
-        if (order.getStatus() != enums.OrderStatus.APPROVED) {
+        if (pendingTaskOutput.existsPendingForOrder(orderId)) {
+            throw new OrderException("Pending receipt task already exists for this order");
+        }
+        if (order.getStatus() != OrderStatus.APPROVED) {
             throw new OrderException("Only APPROVED orders can generate receipts");
         }
 
-        if (pendingTaskOutput.existsPendingForOrder(orderId)) {
-            throw new OrderException("A receipt task already exists for this order");
-        }
 
         LocalDateTime now = LocalDateTime.now(clock);
         PendingTask task = PendingTask.factory(order, now);

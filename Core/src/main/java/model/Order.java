@@ -35,6 +35,7 @@ public class Order {
         if (amount == null || amount.signum() <= 0) {
             throw new OrderException("Order amount must be greater than zero");
         }
+        if (amount.compareTo(new BigDecimal("10000")) > 0) throw new OrderException("Order amount exceeds maximum allowed");
         if (now == null) {
             throw new OrderException("Current time cannot be null");
         }
@@ -47,6 +48,9 @@ public class Order {
                 now,
                 now
         );
+    }
+    public static Order restore(Long id, User user, OrderStatus status, BigDecimal amount, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return new Order(id, user, status, amount, createdAt, updatedAt);
     }
 
 
@@ -96,10 +100,17 @@ public class Order {
                 || status == OrderStatus.REJECTED
                 || status == OrderStatus.CANCELLED;
     }
+
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {this.updatedAt = updatedAt;}
+    public void setId(Long id) {this.id = id;}
     public OrderStatus getStatus() {
         return status;
     }
-
+    public Long getId() {return id;}
+    public User getUser() {return user;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public LocalDateTime getUpdatedAt() {return updatedAt;}
     public BigDecimal getAmount() {
         return amount;
     }

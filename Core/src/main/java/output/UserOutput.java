@@ -8,5 +8,6 @@ public interface UserOutput {
     boolean existsByEmail(String email);
     boolean save(User user);
     List<User> findAllPending();
+    User findByEmail(String email);
 }
 

@@ -35,10 +35,13 @@ public class User {
         }
         if (!email.contains("@")) {
             throw new UserException("Invalid email format");
+
         }
+        email = email.trim();
         if (password == null || password.isBlank()) {
             throw new UserException("Password cannot be null or empty");
         }
+        password = password.trim();
         if (password.length() < 6) {
             throw new UserException("Password must have at least 6 characters");
         }
@@ -56,6 +59,12 @@ public class User {
                 now
         );
     }
+    public static User restore(Long id, String email, String password, UserStatus status, String activationCode, LocalDateTime activationExpiresAt, LocalDateTime createdAt) {
+
+        return new User(id,email, password, status, activationCode, activationExpiresAt, createdAt
+        );
+    }
+
 
 
 
@@ -75,8 +84,15 @@ public class User {
     public boolean isActive() {
         return status == UserStatus.ACTIVE;
     }
+    public UserStatus getStatus() {return status;}
+    public Long getId() {return id;}
+    public String getEmail() {return email;}
+    public String getActivationCode() {return activationCode;}
+    public String getPassword() {return password;}
+    public LocalDateTime getActivationExpiresAt() {return activationExpiresAt;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public void setId(Long id) {this.id = id;}
 
-    public UserStatus getStatus() {
-        return status;
+    public void setActivationCode(String code) { this.activationCode = code; }
     }
-}
+

@@ -41,21 +41,36 @@ public class PendingTask {
                 null
         );
     }
+    public static PendingTask restore(Long id, Order order, PendingTaskStatus status, LocalDateTime createdAt, LocalDateTime processedAt) {
+
+        return new PendingTask(id, order, status, createdAt, processedAt);
+    }
+
 
 
 
     public void markDone(LocalDateTime now) {
+        if (status != PendingTaskStatus.PENDING) {
+            throw new PendingTaskException("Task already processed");
+        }
+
         if (now == null) {
             throw new PendingTaskException("Current time cannot be null");
         }
+
         this.status = PendingTaskStatus.DONE;
         this.processedAt = now;
     }
 
     public void markError(LocalDateTime now) {
+        if (status != PendingTaskStatus.PENDING) {
+            throw new PendingTaskException("Task already processed");
+        }
+
         if (now == null) {
             throw new PendingTaskException("Current time cannot be null");
         }
+
         this.status = PendingTaskStatus.ERROR;
         this.processedAt = now;
     }
@@ -64,13 +79,12 @@ public class PendingTask {
         return status == PendingTaskStatus.PENDING;
     }
 
-    public PendingTaskStatus getStatus() {
-        return status;
-    }
-
+    public PendingTaskStatus getStatus() {return status;}
+    public Long getId() {return id;}
+    public Order getOrder() {return order;}
+    public LocalDateTime getCreatedAt() {return createdAt;}
     public LocalDateTime getProcessedAt() {
         return processedAt;
     }
-
-
+    public void setId(Long id) {this.id = id;}
 }
