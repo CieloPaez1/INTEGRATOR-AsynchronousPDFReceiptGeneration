@@ -1,6 +1,6 @@
 package com.cielo.adapter.web.order;
 
-import enums.OrderStatus;
+
 import input.CreateOrderInput;
 import input.GenerateOrderReceiptPDFInput;
 import jakarta.validation.Valid;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+
 
 @RestController
 @RequestMapping

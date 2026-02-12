@@ -26,16 +26,13 @@ public class TaskController {
     @GetMapping("/receipt")
     public ResponseEntity<byte[]> downloadReceipts() {
 
-        List<byte[]> pdfs = processPending.process();
-
-        if (pdfs.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-
-
         try {
 
+            List<byte[]> pdfs = processPending.process();
+
+            if (pdfs.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
 
             if (pdfs.size() == 1) {
                 return ResponseEntity.ok()
@@ -43,7 +40,6 @@ public class TaskController {
                         .contentType(MediaType.APPLICATION_PDF)
                         .body(pdfs.get(0));
             }
-
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ZipOutputStream zipOut = new ZipOutputStream(baos);

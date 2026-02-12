@@ -66,7 +66,6 @@ public class UserTest {
         Assertions.assertFalse(user.isActive());
     }
 
-
     @Test
     void throwExceptionWhenActivatingFromInvalidState() {
         LocalDateTime now = LocalDateTime.now();
@@ -76,6 +75,16 @@ public class UserTest {
 
         Assertions.assertThrows(UserException.class, () ->
                 user.activate(now.plusMinutes(2))
+        );
+    }
+
+    @Test
+    void throwExceptionWhenActivateReceivesNullDate() {
+        LocalDateTime now = LocalDateTime.now();
+        User user = createPendingUser(now);
+
+        Assertions.assertThrows(UserException.class, () ->
+                user.activate(null)
         );
     }
 
@@ -109,7 +118,7 @@ public class UserTest {
     }
 
     @Test
-    void restoreRecreatesOrderWithGivenValues() {
+    void restoreRecreatesUserWithGivenValues() {
         LocalDateTime now = LocalDateTime.now();
 
         User user = User.restore(

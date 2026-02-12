@@ -31,11 +31,15 @@ public class ActivateUserTest {
         );
     }
 
+    private LocalDateTime now(Clock clock) {
+        return LocalDateTime.ofInstant(clock.instant(), ZoneId.systemDefault());
+    }
+
     private User pendingValid(Clock clock) {
         return User.factory(
                 "john@example.com",
                 "secret123",
-                LocalDateTime.ofInstant(clock.instant(), ZoneId.systemDefault()).minusHours(1)
+                now(clock).minusHours(1)
         );
     }
 
@@ -43,9 +47,8 @@ public class ActivateUserTest {
         return User.factory(
                 "expired@example.com",
                 "secret123",
-                LocalDateTime.ofInstant(clock.instant(), ZoneId.systemDefault()).minusHours(25)
+                now(clock).minusHours(25)
         );
-
     }
 
     @Test
@@ -58,6 +61,9 @@ public class ActivateUserTest {
         new ActivateUser(userOutput, clock).activateUser();
 
         verify(userOutput).save(user);
+        verify(userOutput).findAllPending();
+        verifyNoMoreInteractions(userOutput);
+
         Assertions.assertEquals(UserStatus.ACTIVE, user.getStatus());
     }
 
@@ -81,7 +87,7 @@ public class ActivateUserTest {
         User user2 = User.factory(
                 "jane@example.com",
                 "secret456",
-                LocalDateTime.ofInstant(clock.instant(), ZoneId.systemDefault()).minusHours(2)
+                now(clock).minusHours(2)
         );
 
         when(userOutput.findAllPending()).thenReturn(List.of(user1, user2));
@@ -101,8 +107,24 @@ public class ActivateUserTest {
 
         new ActivateUser(userOutput, clock).activateUser();
 
+        verify(userOutput).findAllPending();
         verify(userOutput, never()).save(any());
     }
 
+    @Test
+    void shouldStopExecutionIfActivationThrowsException() {
+        Clock clock = fixedClock();
+        User user = pendingValid(clock);
 
+        // Simulamos estado inválido
+        user.activate(now(clock)); // ahora ya está ACTIVE
+
+        when(userOutput.findAllPending()).thenReturn(List.of(user));
+
+        Assertions.assertThrows(Exception.class, () ->
+                new ActivateUser(userOutput, clock).activateUser()
+        );
+
+        verify(userOutput, never()).save(any());
+    }
 }

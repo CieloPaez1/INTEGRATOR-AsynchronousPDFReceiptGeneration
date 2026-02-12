@@ -37,7 +37,6 @@ public class ProcessPendingReceiptsTest {
         );
     }
 
-
     private ProcessPendingReceipts useCase(Clock clock) {
         return new ProcessPendingReceipts(pendingTaskOutput, pdfOutput, clock);
     }
@@ -52,35 +51,42 @@ public class ProcessPendingReceiptsTest {
 
         return PendingTask.factory(order, now);
     }
+
+
     @Test
-    void shouldMarkTaskAsDone() {
+    void shouldGeneratePdfAndMarkTaskAsDone() {
         Clock clock = fixedClock();
         PendingTask task = validTask(clock);
 
+        byte[] fakePdf = new byte[]{1,2,3};
+
         when(pendingTaskOutput.findAllPending()).thenReturn(List.of(task));
+        when(pdfOutput.generate(task)).thenReturn(fakePdf);
 
-        ProcessPendingReceipts useCase = useCase(clock);
+        List<byte[]> result = useCase(clock).process();
 
-        useCase.process();
-
+        Assertions.assertEquals(1, result.size());
+        Assertions.assertArrayEquals(fakePdf, result.get(0));
         Assertions.assertEquals(PendingTaskStatus.DONE, task.getStatus());
         Assertions.assertEquals(LocalDateTime.now(clock), task.getProcessedAt());
 
         verify(pdfOutput).generate(task);
         verify(pendingTaskOutput).update(task);
     }
+
+
+
     @Test
-    void shouldMarkTaskAsErrorWhenPdfFails() {
+    void shouldMarkTaskAsErrorWhenPdfGenerationFails() {
         Clock clock = fixedClock();
         PendingTask task = validTask(clock);
 
         when(pendingTaskOutput.findAllPending()).thenReturn(List.of(task));
-        doThrow(new RuntimeException()).when(pdfOutput).generate(task);
+        when(pdfOutput.generate(task)).thenThrow(new RuntimeException());
 
-        ProcessPendingReceipts useCase = useCase(clock);
+        List<byte[]> result = useCase(clock).process();
 
-        useCase.process();
-
+        Assertions.assertTrue(result.isEmpty());
         Assertions.assertEquals(PendingTaskStatus.ERROR, task.getStatus());
         Assertions.assertEquals(LocalDateTime.now(clock), task.getProcessedAt());
 
@@ -89,23 +95,18 @@ public class ProcessPendingReceiptsTest {
     }
 
 
+
     @Test
-    void shouldSkipNonPendingTasks() {
+    void shouldReturnEmptyListWhenNoPendingTasks() {
         Clock clock = fixedClock();
-        PendingTask task = validTask(clock);
-        task.markDone(LocalDateTime.now(clock));
-        when(pendingTaskOutput.findAllPending()).thenReturn(List.of(task));
 
-        ProcessPendingReceipts useCase = useCase(clock);
+        when(pendingTaskOutput.findAllPending()).thenReturn(List.of());
 
-        useCase.process();
+        List<byte[]> result = useCase(clock).process();
 
-
-        Assertions.assertEquals(PendingTaskStatus.DONE, task.getStatus());
+        Assertions.assertTrue(result.isEmpty());
 
         verifyNoInteractions(pdfOutput);
         verify(pendingTaskOutput, never()).update(any());
     }
-
-
 }

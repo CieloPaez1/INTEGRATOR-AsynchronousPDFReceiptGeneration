@@ -54,4 +54,6 @@ public class OrderEntity {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 
+    public void setId(long l) {this.id = id; }
+
 }
